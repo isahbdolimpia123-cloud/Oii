@@ -82,7 +82,63 @@ label{display:block;margin-top:10px}
 
 <script>
 
+
 function checkout() {
+  if (!cart.length) {
+    alert("Seu carrinho está vazio.");
+    return;
+  }
+
+  const mode = document.querySelector(
+    'input[name="mode"]:checked'
+  ).value;
+
+  const name = document.getElementById("name").value.trim();
+  const address = document.getElementById("address").value.trim();
+  const notes = document.getElementById("notes").value.trim();
+  const payment = document.getElementById("payment").value;
+
+  if (!name) {
+    alert("Informe seu nome.");
+    return;
+  }
+
+  if (mode === "Entrega" && !address) {
+    alert("Informe o endereço para entrega.");
+    return;
+  }
+
+  const total = cart.reduce(
+    (sum, item) => sum + itemTotal(item),
+    0
+  );
+
+  const lines = cart.map(item => {
+    const extras = item.extras.length
+      ? " (+" + item.extras.map(x => x.name).join(", ") + ")"
+      : "";
+
+    return `• ${item.qty}x ${item.name}${extras} — ${brl(itemTotal(item))}`;
+  });
+
+  const message = [
+    "Olá! Quero fazer um pedido na Burguer Dog do Trecho.",
+    "",
+    ...lines,
+    "",
+    `Total: ${brl(total)}`,
+    `Recebimento: ${mode}`,
+    `Nome: ${name}`,
+    ...(mode === "Entrega" ? [`Endereço: ${address}`] : []),
+    `Pagamento: ${payment}`,
+    `Observações: ${notes || "Nenhuma"}`
+  ].join("\n");
+
+  const url = "https://wa.me/5517996800605?text="
+    + encodeURIComponent(message);
+
+  window.open(url, "_blank");
+}
   if (!cart.length) return;
 
   const mode = document.querySelector(
