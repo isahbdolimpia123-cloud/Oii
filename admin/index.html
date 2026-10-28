@@ -81,7 +81,95 @@ label{display:block;margin-top:10px}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-(function(){
+async function checkout() {
+  if (!cart.length) return;
+
+  const mode = document.querySelector('input[name="mode"]:checked').value;
+  const name = document.getElementById("name").value.trim();
+  const address = document.getElementById("address").value.trim();
+  const notes = document.getElementById("notes").value.trim();
+  const payment = document.getElementById("payment").value;
+
+  if (!name) return alert("Informe seu nome.");
+  if (mode === "Entrega" && !address) {
+    return alert("Informe o endereço para entrega.");
+  }
+
+  const total = cart.reduce((sum, item) => sum + itemTotal(item), 0);
+
+  const items = cart.map(item => ({
+    name: item.name,
+    quantity: item.qty,
+    unit_price: item.price,
+    extras: item.extras,
+    subtotal: itemTotal(item)
+  }));
+
+  const order = {
+    customer_name: name,
+    fulfillment: mode,
+    address: mode === "Entrega" ? address : null,
+    notes: notes || null,
+    payment_method: payment,
+    items: items,
+    total: total,
+    status: "novo"
+  };
+
+  // Abre uma janela durante o clique para evitar bloqueio do navegador.
+  const whatsappWindow = window.open("about:blank", "_blank");
+
+  try {
+    const db = window.supabase.createClient(
+      "https://kjkgzmrlypoatqoutkxy.supabase.co",
+      "sb_publishable_OfxxVwaBXnWQdtMGVa0S5Q_PR2vyxBq"
+    );
+
+    const { error } = await db
+      .from("orders")
+      .insert(order);
+
+    if (error) throw error;
+
+    const lines = items.map(item =>
+      `• ${item.quantity}x ${item.name}` +
+      (item.extras.length
+        ? ` (+ ${item.extras.map(extra => extra.name).join(", ")})`
+        : "") +
+      ` — ${brl(item.subtotal)}`
+    ).join("\n");
+
+    const message =
+      `Olá! Quero fazer um pedido na Burguer Dog do Trecho.\n\n` +
+      `${lines}\n\n` +
+      `Total: ${brl(total)}\n` +
+      `Recebimento: ${mode}\n` +
+      `Nome: ${name}\n` +
+      (mode === "Entrega" ? `Endereço: ${address}\n` : "") +
+      `Pagamento: ${payment}\n` +
+      `Observações: ${notes || "Nenhuma"}`;
+
+    const whatsappUrl =
+      "https://wa.me/5517996800605?text=" +
+      encodeURIComponent(message);
+
+    if (whatsappWindow) {
+      whatsappWindow.location.href = whatsappUrl;
+    } else {
+      window.location.href = whatsappUrl;
+    }
+
+  } catch (error) {
+    if (whatsappWindow) whatsappWindow.close();
+
+    console.error("Erro ao registrar pedido:", error);
+    alert(
+      "Não foi possível registrar o pedido no sistema. " +
+      "Nenhum pedido foi enviado pelo WhatsApp. " +
+      "Tente novamente. Detalhe: " + error.message
+    );
+  }
+}
 'use strict';
 
 const SUPABASE_URL='https://kjkgzmrlypoatqoutkxy.supabase.co';
