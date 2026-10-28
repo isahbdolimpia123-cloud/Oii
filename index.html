@@ -147,7 +147,7 @@ async function checkout(){
     if(error)throw error;
   }catch(error){
     console.error("Erro ao registrar pedido:", error);
-alert(
+alert("Erro completo:\n" + JSON.stringify(error));
   "Erro ao salvar pedido:\n" +
   (error.message || "Sem mensagem") +
   "\nCódigo: " + (error.code || "não informado") +
