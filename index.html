@@ -1,4 +1,4 @@
-<!doctype html>
+se<!doctype html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
@@ -112,7 +112,39 @@ function closeCart(){document.getElementById("drawer").classList.remove("open")}
 function toggleAddress(){document.getElementById("addressBox").style.display=document.querySelector('input[name="mode"]:checked').value==="Entrega"?"block":"none"}
 function checkout(){if(!cart.length)return;let mode=document.querySelector('input[name="mode"]:checked').value,name=document.getElementById("name").value.trim(),address=document.getElementById("address").value.trim(),notes=document.getElementById("notes").value.trim(),payment=document.getElementById("payment").value;if(!name)return alert("Informe seu nome.");if(mode==="Entrega"&&!address)return alert("Informe o endereço para entrega.");let total=cart.reduce((s,i)=>s+itemTotal(i),0);let lines=cart.map(i=>`• ${i.qty}x ${i.name}${i.extras.length?" (+ "+i.extras.map(x=>x.name).join(", ")+")":""} — ${brl(itemTotal(i))}`).join("%0A");let msg=`Olá! Quero fazer um pedido na Burguer Dog do Trecho.%0A%0A${lines}%0A%0A*Total: ${brl(total)}*%0A*Recebimento:* ${mode}%0A*Nome:* ${encodeURIComponent(name)}%0A${mode==="Entrega"?"*Endereço:* "+encodeURIComponent(address)+"%0A":""}*Pagamento:* ${encodeURIComponent(payment)}%0A*Observações:* ${encodeURIComponent(notes||"Nenhuma")}`;window.open("https://wa.me/5517996800605?text="+msg,"_blank")}
 function toast(t){let x=document.getElementById("toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),1600)}
-renderFilters();renderProducts();renderAddons();updateCart();
+
+async function loadPublicProducts() {
+  try {
+    const db = window.supabase.createClient(
+      'https://kjkgzmrlypoatqoutkxy.supabase.co',
+      'sb_publishable_OfxxVwaBXnWQdtMGVa0S5Q_PR2vyxBq'
+    );
+
+    const { data, error } = await db
+      .from('products')
+      .select('id,name,description,category,price,image_url,active,available')
+      .eq('active', true)
+      .eq('available', true)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    products = (data || []).map(p => ({
+      name: p.name,
+      price: Number(p.price) || 0,
+      img: p.image_url || 'assets/x-toba.png',
+      cat: p.category || 'Outros',
+      desc: p.description || ''
+    }));
+
+    active = 'Todos';
+    renderFilters();
+    renderProducts();
+  } catch (error) {
+    console.error('Erro ao carregar produtos:', error);
+  }
+  }
+renderFilters();renderProducts();renderAddons();updateCart();loadPublicProducts();
 </script>
 </body>
 </html>
