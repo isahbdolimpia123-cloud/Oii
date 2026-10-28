@@ -143,6 +143,7 @@ async function checkout(){
       total:total,
       status:"aguardando"
     });
+    alert("Resultado do Supabase: " + (error ? JSON.stringify(error) : "sem erro"));
 
     if(error)throw error;
   }catch(error){
