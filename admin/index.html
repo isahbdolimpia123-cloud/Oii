@@ -1,152 +1,56 @@
-
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Painel Burguer Dog</title>
+<title>Painel Burguer Dog do Trecho</title>
 <style>
-body{margin:0;padding:16px;background:#151515;color:white;font-family:Arial}
+*{box-sizing:border-box}
+body{margin:0;padding:18px;background:#151515;color:#fff;font-family:Arial,sans-serif}
 main{max-width:800px;margin:auto}
-section{background:#242424;padding:16px;border-radius:12px;margin:15px 0}
-input,textarea,select{box-sizing:border-box;width:100%;padding:12px;margin:5px 0 12px;background:#111;color:white;border:1px solid #555;border-radius:7px}
-button{padding:12px;border:0;border-radius:7px;background:#f5a623;font-weight:bold;margin:4px;cursor:pointer}
-.product{border:1px solid #555;padding:12px;margin:10px 0;border-radius:9px;overflow-wrap:anywhere}
-.hidden{display:none!important}
-#status{overflow-wrap:anywhere}
+h1{color:#ffb000;text-align:center}
+h2{color:#ffb000}
+.box{background:#242424;padding:18px;border-radius:12px;margin:16px 0}
+input,textarea,select,button{width:100%;padding:12px;margin:6px 0;border-radius:7px;border:1px solid #555;font-size:16px}
+input,textarea,select{background:#171717;color:white}
+button{background:#ffb000;color:#171717;border:0;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.5}
+.secondary{background:#444;color:white}
+.danger{background:#b42318;color:white}
+.card{background:#303030;padding:14px;border-radius:9px;margin:12px 0;overflow-wrap:anywhere}
+.small{font-size:13px;color:#ccc}
+#status{white-space:pre-wrap;overflow-wrap:anywhere}
+.hidden{display:none}
+.row{display:flex;gap:8px}
+.row button{flex:1}
+label{display:block;margin-top:10px}
 </style>
 </head>
 <body>
 <main>
 <h1>🍔 Burguer Dog do Trecho</h1>
-<p id="status">Entre com sua conta administradora.</p>
+<p style="text-align:center">Painel administrativo</p>
 
-<section id="loginPanel">
+<div id="login" class="box">
 <h2>Entrar</h2>
 <form id="loginForm">
-<label>E-mail</label>
-<input id="email" type="email" required>
-<label>Senha</label>
-<input id="password" type="password" required>
-<button id="loginButton">Entrar no painel</button>
+<label for="email">E-mail</label>
+<input id="email" type="email" autocomplete="username" required>
+<label for="password">Senha</label>
+<input id="password" type="password" autocomplete="current-password" required>
+<button id="loginButton" type="submit">Entrar</button>
 </form>
-</section>
+</div>
 
-<section id="appPanel" class="hidden">
-<button id="logout">Sair</button>
+<div id="dashboard" class="hidden">
+<div class="box">
+<div class="row">
+<button id="reload" type="button">Atualizar produtos</button>
+<button id="logout" class="secondary" type="button">Sair</button>
+</div>
 <h2 id="formTitle">Cadastrar produto</h2>
 <form id="productForm">
 <input id="productId" type="hidden">
-<label>Nome do produto</label>
-<input id="name" required>
-<label>Preço (R$)</label>
-<input id="price" type="number" min="0" step="0.01" required>
-<label>Categoria</label>
-<select id="category">
-<option>Hot Dogs</option>
-<option>Hambúrgueres</option>
-<option>Porções</option>
-<option>Bebidas</option>
-<option>Combos</option>
-<option>Lanches</option>
-<option>Outros</option>
-</select>
-<label>Descrição</label>
-<textarea id="description"></textarea>
-<label>Link da imagem (opcional)</label>
-<input id="imageUrl" type="url" placeholder="https://...">
-<label><input id="active" type="checkbox" checked style="width:auto"> Produto ativo</label>
-<button id="saveButton">Salvar produto</button>
-<button id="cancelEdit" type="button" class="hidden">Cancelar edição</button>
-</form>
-<hr>
-<h2>Produtos cadastrados</h2>
-<button id="refresh" type="button">Atualizar lista</button>
-<div id="products"></div>
-</section>
-</main>
-
-<script type="module">
-import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
-
-const db=createClient(
-'https://kjkgzmrlypoatqoutkxy.supabase.co',
-'sb_publishable_OfxxVwaBXnWQdtMGVa0S5Q_PR2vyxBq'
-);
-const $=id=>document.getElementById(id);
-const status=$('status');
-
-function msg(t,err=false){
-status.textContent=t;
-status.style.color=err?'#ff8585':'#9ee6ad';
-}
-
-async function loadProducts(){
-const box=$('products');
-box.textContent='Carregando...';
-const {data,error}=await db.from('products')
-.select('id,name,description,category,price,image_url,active,available,created_at')
-.order('created_at',{ascending:false});
-if(error){box.textContent='Erro: '+error.message;return;}
-box.replaceChildren();
-if(!data.length){box.textContent='Nenhum produto cadastrado ainda.';return;}
-
-for(const p of data){
-const card=document.createElement('article');
-card.className='product';
-const title=document.createElement('h3');
-title.textContent=p.name;
-card.appendChild(title);
-const price=document.createElement('p');
-price.textContent=Number(p.price).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-card.appendChild(price);
-const desc=document.createElement('p');
-desc.textContent=(p.category||'')+' — '+(p.description||'');
-card.appendChild(desc);
-
-if(p.image_url){
-try{
-const u=new URL(p.image_url);
-if(['https:','http:'].includes(u.protocol)){
-const img=document.createElement('img');
-img.src=u.href;img.alt=p.name;img.style.maxWidth='100%';
-card.appendChild(img);
-}
-}catch{}
-}
-
-const edit=document.createElement('button');
-edit.textContent='Editar';
-edit.onclick=()=>{
-$('productId').value=p.id;
-$('name').value=p.name||'';
-$('price').value=p.price;
-$('category').value=p.category||'Lanches';
-$('description').value=p.description||'';
-$('imageUrl').value=p.image_url||'';
-$('active').checked=!!p.active;
-$('formTitle').textContent='Editar produto';
-$('saveButton').textContent='Salvar alterações';
-$('cancelEdit').classList.remove('hidden');
-window.scrollTo(0,0);
-};
-card.appendChild(edit);
-
-const toggle=document.createElement('button');
-toggle.textContent=p.active?'Desativar':'Ativar';
-toggle.onclick=async()=>{
-toggle.disabled=true;
-const next=!p.active;
-const {error}=await db.from('products')
-.update({active:next,available:next}).eq('id',p.id);
-if(error)msg('Erro: '+error.message,true);
-else{msg('Status atualizado.');await loadProducts();}
-};
-card.appendChild(toggle);
-
-const del=document.createElement('button');
-del.textContent='Excluir';
-del.onclick=async()=>{
-if(!confirm('Excluir '+p.name+' permanentemente?'))return;
-const {error}=await db.from('produ
-
+<label for="nam
+  
