@@ -146,9 +146,15 @@ async function checkout(){
 
     if(error)throw error;
   }catch(error){
-    console.error("Erro ao registrar pedido:",error);
-    alert("Não foi possível registrar seu pedido. Nenhuma mensagem foi enviada ao WhatsApp. Tente novamente.");
-    return;
+    console.error("Erro ao registrar pedido:", error);
+alert(
+  "Erro ao salvar pedido:\n" +
+  (error.message || "Sem mensagem") +
+  "\nCódigo: " + (error.code || "não informado") +
+  "\nDetalhes: " + (error.details || "nenhum") +
+  "\nDica: " + (error.hint || "nenhuma")
+);
+return;
   }
 
   const lines=cart.map(i=>
