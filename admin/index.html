@@ -131,8 +131,7 @@ function checkout() {
     "https://wa.me/5517996800605?text=" +
     encodeURIComponent(message);
 
-  window.open(whatsappUrl, "_blank");
-}
+  window.location.href = whatsappUrl;
   if (!cart.length) return;
 
   const mode = document.querySelector('input[name="mode"]:checked').value;
