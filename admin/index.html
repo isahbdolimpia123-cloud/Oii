@@ -1,66 +1,47 @@
-
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Painel | Burguer Dog do Trecho</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel Burguer Dog</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#151515;color:#fff;font-family:Arial,sans-serif}
-main{max-width:1000px;margin:auto;padding:18px}
-header,.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-header{justify-content:space-between}
-.panel,.product{background:#222;border:1px solid #444;border-radius:14px;padding:16px;margin:16px 0}
-h1{font-size:25px}h2{font-size:21px}
-p{color:#bbb;line-height:1.5}
-label{display:block;margin:12px 0 6px}
-input,textarea,select{width:100%;padding:12px;border-radius:8px;border:1px solid #555;background:#151515;color:white;font-size:16px}
-button{border:0;border-radius:8px;padding:12px;background:#f5a623;color:#171717;font-weight:bold;font-size:15px;cursor:pointer}
-.secondary{background:#444;color:white}.danger{background:#a83232;color:white}
-.grid,.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-.wide{grid-column:1/-1}
-.product img{width:100%;height:150px;object-fit:cover;border-radius:8px}
-.price{font-size:20px;color:#ffc35b;font-weight:bold}
+body{margin:0;padding:16px;background:#151515;color:white;font-family:Arial}
+main{max-width:800px;margin:auto}
+section{background:#242424;padding:16px;border-radius:12px;margin:15px 0}
+input,textarea,select{box-sizing:border-box;width:100%;padding:12px;margin:5px 0 12px;background:#111;color:white;border:1px solid #555;border-radius:7px}
+button{padding:12px;border:0;border-radius:7px;background:#f5a623;font-weight:bold;margin:4px;cursor:pointer}
+.product{border:1px solid #555;padding:12px;margin:10px 0;border-radius:9px;overflow-wrap:anywhere}
 .hidden{display:none!important}
-.check{display:flex;align-items:center;gap:8px}
-.check input{width:auto}
 #status{overflow-wrap:anywhere}
-@media(max-width:500px){main{padding:10px}.panel{padding:12px}}
 </style>
 </head>
 <body>
 <main>
-<header>
-<div>
 <h1>🍔 Burguer Dog do Trecho</h1>
-<p>Gerenciamento do cardápio</p>
-</div>
-<button id="logout" class="secondary hidden">Sair</button>
-</header>
+<p id="status">Entre com sua conta administradora.</p>
 
-<section id="loginPanel" class="panel">
-<h2>Entrar no painel</h2>
+<section id="loginPanel">
+<h2>Entrar</h2>
 <form id="loginForm">
-<label for="email">E-mail</label>
-<input id="email" type="email" autocomplete="username" required>
-<label for="password">Senha</label>
-<input id="password" type="password" autocomplete="current-password" required>
-<div class="actions"><button id="loginButton">Entrar</button></div>
+<label>E-mail</label>
+<input id="email" type="email" required>
+<label>Senha</label>
+<input id="password" type="password" required>
+<button id="loginButton">Entrar no painel</button>
 </form>
 </section>
 
-<p id="status" role="status"></p>
-
 <section id="appPanel" class="hidden">
-<section class="panel">
+<button id="logout">Sair</button>
 <h2 id="formTitle">Cadastrar produto</h2>
 <form id="productForm">
 <input id="productId" type="hidden">
-<div class="grid">
-<div><label for="name">Nome *</label><input id="name" required maxlength="120"></div>
-<div><label for="price">Preço (R$) *</label><input id="price" type="number" min="0" step="0.01" required></div>
-<div><label for="category">Categoria</label>
+<label>Nome do produto</label>
+<input id="name" required>
+<label>Preço (R$)</label>
+<input id="price" type="number" min="0" step="0.01" required>
+<label>Categoria</label>
 <select id="category">
 <option>Hot Dogs</option>
 <option>Hambúrgueres</option>
@@ -69,115 +50,103 @@ button{border:0;border-radius:8px;padding:12px;background:#f5a623;color:#171717;
 <option>Combos</option>
 <option>Lanches</option>
 <option>Outros</option>
-</select></div>
-<div><label for="imageUrl">Link da imagem (opcional)</label><input id="imageUrl" type="url" placeholder="https://..."></div>
-<div class="wide"><label for="description">Descrição</label><textarea id="description" rows="3"></textarea></div>
-</div>
-<label class="check"><input id="active" type="checkbox" checked> Produto ativo</label>
-<div class="actions">
+</select>
+<label>Descrição</label>
+<textarea id="description"></textarea>
+<label>Link da imagem (opcional)</label>
+<input id="imageUrl" type="url" placeholder="https://...">
+<label><input id="active" type="checkbox" checked style="width:auto"> Produto ativo</label>
 <button id="saveButton">Salvar produto</button>
-<button id="cancelEdit" type="button" class="secondary hidden">Cancelar edição</button>
-</div>
+<button id="cancelEdit" type="button" class="hidden">Cancelar edição</button>
 </form>
-</section>
-
-<section class="panel">
-<header>
+<hr>
 <h2>Produtos cadastrados</h2>
-<button id="refresh" type="button" class="secondary">Atualizar</button>
-</header>
-<div id="products" class="products"></div>
-</section>
+<button id="refresh" type="button">Atualizar lista</button>
+<div id="products"></div>
 </section>
 </main>
 
 <script type="module">
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
 
-const supabase = createClient(
-  'https://kjkgzmrlypoatqoutkxy.supabase.co',
-  'sb_publishable_OfxxVwaBXnWQdtMGVa0S5Q_PR2vyxBq'
+const db=createClient(
+'https://kjkgzmrlypoatqoutkxy.supabase.co',
+'sb_publishable_OfxxVwaBXnWQdtMGVa0S5Q_PR2vyxBq'
 );
+const $=id=>document.getElementById(id);
+const status=$('status');
 
-const $ = id => document.getElementById(id);
-const loginPanel = $('loginPanel');
-const appPanel = $('appPanel');
-const form = $('productForm');
-const productsBox = $('products');
-const status = $('status');
-
-function msg(text, error = false) {
-  status.textContent = text;
-  status.style.color = error ? '#ff8888' : '#9ee6ad';
+function msg(t,err=false){
+status.textContent=t;
+status.style.color=err?'#ff8585':'#9ee6ad';
 }
 
-async function verifyAdmin(user) {
-  const { data, error } = await supabase
-    .from('admin_users')
-    .select('user_id')
-    .eq('user_id', user.id)
-    .maybeSingle();
+async function loadProducts(){
+const box=$('products');
+box.textContent='Carregando...';
+const {data,error}=await db.from('products')
+.select('id,name,description,category,price,image_url,active,available,created_at')
+.order('created_at',{ascending:false});
+if(error){box.textContent='Erro: '+error.message;return;}
+box.replaceChildren();
+if(!data.length){box.textContent='Nenhum produto cadastrado ainda.';return;}
 
-  if (error) throw error;
-  if (!data) throw new Error('Esta conta não tem permissão de administrador.');
+for(const p of data){
+const card=document.createElement('article');
+card.className='product';
+const title=document.createElement('h3');
+title.textContent=p.name;
+card.appendChild(title);
+const price=document.createElement('p');
+price.textContent=Number(p.price).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+card.appendChild(price);
+const desc=document.createElement('p');
+desc.textContent=(p.category||'')+' — '+(p.description||'');
+card.appendChild(desc);
 
-  loginPanel.classList.add('hidden');
-  appPanel.classList.remove('hidden');
-  $('logout').classList.remove('hidden');
-  await loadProducts();
+if(p.image_url){
+try{
+const u=new URL(p.image_url);
+if(['https:','http:'].includes(u.protocol)){
+const img=document.createElement('img');
+img.src=u.href;img.alt=p.name;img.style.maxWidth='100%';
+card.appendChild(img);
+}
+}catch{}
 }
 
-$('loginForm').addEventListener('submit', async event => {
-  event.preventDefault();
-  $('loginButton').disabled = true;
-  msg('Verificando acesso...');
+const edit=document.createElement('button');
+edit.textContent='Editar';
+edit.onclick=()=>{
+$('productId').value=p.id;
+$('name').value=p.name||'';
+$('price').value=p.price;
+$('category').value=p.category||'Lanches';
+$('description').value=p.description||'';
+$('imageUrl').value=p.image_url||'';
+$('active').checked=!!p.active;
+$('formTitle').textContent='Editar produto';
+$('saveButton').textContent='Salvar alterações';
+$('cancelEdit').classList.remove('hidden');
+window.scrollTo(0,0);
+};
+card.appendChild(edit);
 
-  try {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: $('email').value.trim(),
-      password: $('password').value
-    });
-    if (error) throw error;
-    await verifyAdmin(data.user);
-    msg('Acesso autorizado!');
-  } catch (error) {
-    msg(error.message, true);
-  } finally {
-    $('loginButton').disabled = false;
-  }
-});
+const toggle=document.createElement('button');
+toggle.textContent=p.active?'Desativar':'Ativar';
+toggle.onclick=async()=>{
+toggle.disabled=true;
+const next=!p.active;
+const {error}=await db.from('products')
+.update({active:next,available:next}).eq('id',p.id);
+if(error)msg('Erro: '+error.message,true);
+else{msg('Status atualizado.');await loadProducts();}
+};
+card.appendChild(toggle);
 
-function resetForm() {
-  form.reset();
-  $('productId').value = '';
-  $('active').checked = true;
-  $('formTitle').textContent = 'Cadastrar produto';
-  $('saveButton').textContent = 'Salvar produto';
-  $('cancelEdit').classList.add('hidden');
-}
-
-form.addEventListener('submit', async event => {
-  event.preventDefault();
-  const button = $('saveButton');
-  button.disabled = true;
-
-  const id = $('productId').value;
-  const active = $('active').checked;
-  const product = {
-    name: $('name').value.trim(),
-    price: Number($('price').value),
-    category: $('category').value,
-    description: $('description').value.trim(),
-    image_url: $('imageUrl').value.trim(),
-    active,
-    available: active
-  };
-
-  try {
-    if (!product.name || !Number.isFinite(product.price) || product.price < 0) {
-      throw new Error('Confira o nome e o preço.');
-    }
-
-    const res
-
-  
+const del=document.createElement('button');
+del.textContent='Excluir';
+del.onclick=async()=>{
+if(!confirm('Excluir '+p.name+' permanentemente?'))return;
+const {error}=await db.from('produ
+```
