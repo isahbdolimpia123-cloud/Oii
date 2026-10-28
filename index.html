@@ -184,10 +184,7 @@ function toast(t){let x=document.getElementById("toast");x.textContent=t;x.class
 
 async function loadPublicProducts() {
   try {
-    const db = window.supabase.createClient(
-      'https://kjkgzmrlypoatqoutkxy.supabase.co',
-      'sb_publishable_OfxxVwaBXnWQdtMGVa0S5Q_PR2vyxBq'
-    );
+    
 
     const { data, error } = await db
       .from('products')
