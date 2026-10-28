@@ -52,5 +52,299 @@ label{display:block;margin-top:10px}
 <h2 id="formTitle">Cadastrar produto</h2>
 <form id="productForm">
 <input id="productId" type="hidden">
-<label for="nam
-  
+<label for="name">Nome do produto *</label>
+<input id="name" required maxlength="120">
+<label for="price">Preço (R$) *</label>
+<input id="price" type="number" min="0" step="0.01" required>
+<label for="category">Categoria</label>
+<input id="category" placeholder="Ex.: Hambúrguer, cachorro-quente">
+<label for="description">Descrição</label>
+<textarea id="description" rows="3"></textarea>
+<label for="image_url">URL da imagem</label>
+<input id="image_url" type="url" placeholder="https://...">
+<label><input id="active" type="checkbox" checked style="width:auto"> Produto ativo</label>
+<label><input id="available" type="checkbox" checked style="width:auto"> Disponível para venda</label>
+<button id="saveButton" type="submit">Salvar produto</button>
+<button id="cancelEdit" class="secondary hidden" type="button">Cancelar edição</button>
+</form>
+</div>
+
+<div class="box">
+<h2>Produtos cadastrados</h2>
+<div id="products">Carregando...</div>
+</div>
+</div>
+
+<div id="status" role="status" aria-live="polite"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+(function(){
+'use strict';
+
+const SUPABASE_URL='https://kjkgzmrlypoatqoutkxy.supabase.co';
+const SUPABASE_KEY='sb_publishable_OfxxVwaBXnWQdtMGVa0S5Q';
+
+const $=id=>document.getElementById(id);
+const login=$('login');
+const dashboard=$('dashboard');
+const status=$('status');
+let db;
+let busy=false;
+
+function msg(text,error=false){
+  status.textContent=text;
+  status.style.color=error?'#ff7777':'#7dff9b';
+}
+
+function showDashboard(show){
+  login.classList.toggle('hidden',show);
+  dashboard.classList.toggle('hidden',!show);
+}
+
+function friendlyError(error){
+  return error && error.message ? error.message : String(error||'Erro desconhecido');
+}
+
+function setBusy(value){
+  busy=value;
+  $('loginButton').disabled=value;
+  $('saveButton').disabled=value;
+}
+
+function resetForm(){
+  $('productForm').reset();
+  $('productId').value='';
+  $('active').checked=true;
+  $('available').checked=true;
+  $('formTitle').textContent='Cadastrar produto';
+  $('saveButton').textContent='Salvar produto';
+  $('cancelEdit').classList.add('hidden');
+}
+
+async function verifyAdmin(user){
+  const {data,error}=await db
+    .from('admin_users')
+    .select('user_id')
+    .eq('user_id',user.id)
+    .maybeSingle();
+
+  if(error) throw new Error('Não foi possível verificar a autorização: '+error.message);
+  if(!data) throw new Error('Acesso não autorizado. Este usuário não está cadastrado como administrador.');
+}
+
+async function loadProducts(){
+  $('products').textContent='Carregando produtos...';
+
+  const {data,error}=await db
+    .from('products')
+    .select('id,name,description,category,price,image_url,active,available,created_at')
+    .order('created_at',{ascending:false});
+
+  if(error){
+    $('products').textContent='Erro ao carregar produtos: '+error.message;
+    msg('Erro ao carregar produtos: '+error.message,true);
+    return;
+  }
+
+  $('products').replaceChildren();
+
+  if(!data || data.length===0){
+    $('products').textContent='Nenhum produto cadastrado ainda.';
+    return;
+  }
+
+  data.forEach(p=>{
+    const card=document.createElement('div');
+    card.className='card';
+
+    const title=document.createElement('h3');
+    title.textContent=p.name||'Produto sem nome';
+    card.appendChild(title);
+
+    const price=document.createElement('p');
+    price.textContent='Preço: '+Number(p.price||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+    card.appendChild(price);
+
+    const details=document.createElement('p');
+    details.textContent=(p.category||'Sem categoria')+' • '+(p.available?'Disponível':'Indisponível')+' • '+(p.active?'Ativo':'Inativo');
+    card.appendChild(details);
+
+    if(p.description){
+      const desc=document.createElement('p');
+      desc.textContent=p.description;
+      card.appendChild(desc);
+    }
+
+    const edit=document.createElement('button');
+    edit.textContent='Editar';
+    edit.onclick=()=>{
+      $('productId').value=p.id;
+      $('name').value=p.name||'';
+      $('price').value=p.price??'';
+      $('category').value=p.category||'';
+      $('description').value=p.description||'';
+      $('image_url').value=p.image_url||'';
+      $('active').checked=p.active!==false;
+      $('available').checked=p.available!==false;
+      $('formTitle').textContent='Editar produto';
+      $('saveButton').textContent='Salvar alterações';
+      $('cancelEdit').classList.remove('hidden');
+      window.scrollTo({top:0,behavior:'smooth'});
+    };
+    card.appendChild(edit);
+
+    const toggle=document.createElement('button');
+    toggle.className='secondary';
+    toggle.textContent=p.active?'Desativar':'Ativar';
+    toggle.onclick=async()=>{
+      if(busy)return;
+      setBusy(true);
+      try{
+        const next=!p.active;
+        const {error}=await db.from('products')
+          .update({active:next,available:next})
+          .eq('id',p.id);
+        if(error)throw error;
+        msg('Status atualizado.');
+        await loadProducts();
+      }catch(e){
+        msg('Erro ao alterar status: '+friendlyError(e),true);
+      }finally{
+        setBusy(false);
+      }
+    };
+    card.appendChild(toggle);
+
+    const del=document.createElement('button');
+    del.className='danger';
+    del.textContent='Excluir';
+    del.onclick=async()=>{
+      if(!confirm('Excluir '+p.name+' permanentemente?'))return;
+      if(busy)return;
+      setBusy(true);
+      try{
+        const {error}=await db.from('products').delete().eq('id',p.id);
+        if(error)throw error;
+        msg('Produto excluído.');
+        await loadProducts();
+      }catch(e){
+        msg('Erro ao excluir: '+friendlyError(e),true);
+      }finally{
+        setBusy(false);
+      }
+    };
+    card.appendChild(del);
+    $('products').appendChild(card);
+  });
+}
+
+async function enterPanel(user){
+  await verifyAdmin(user);
+  showDashboard(true);
+  msg('Login realizado. Acesso autorizado.');
+  await loadProducts();
+}
+
+async function init(){
+  if(!window.supabase){
+    msg('Não foi possível carregar o Supabase. Verifique sua conexão com a internet e recarregue a página.',true);
+    return;
+  }
+
+  db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+  $('loginForm').addEventListener('submit',async e=>{
+    e.preventDefault();
+    if(busy)return;
+    setBusy(true);
+    msg('Verificando acesso...');
+    try{
+      const {data,error}=await db.auth.signInWithPassword({
+        email:$('email').value.trim(),
+        password:$('password').value
+      });
+      if(error)throw error;
+      if(!data.user)throw new Error('Login não retornou um usuário.');
+      await enterPanel(data.user);
+    }catch(e){
+      await db.auth.signOut();
+      showDashboard(false);
+      msg('Não foi possível entrar: '+friendlyError(e),true);
+    }finally{
+      setBusy(false);
+    }
+  });
+
+  $('productForm').addEventListener('submit',async e=>{
+    e.preventDefault();
+    if(busy)return;
+    setBusy(true);
+
+    const id=$('productId').value;
+    const product={
+      name:$('name').value.trim(),
+      price:Number($('price').value),
+      category:$('category').value.trim()||null,
+      description:$('description').value.trim()||null,
+      image_url:$('image_url').value.trim()||null,
+      active:$('active').checked,
+      available:$('available').checked
+    };
+
+    try{
+      if(!product.name)throw new Error('Informe o nome do produto.');
+      if(!Number.isFinite(product.price)||product.price<0)throw new Error('Informe um preço válido.');
+
+      let result;
+      if(id){
+        result=await db.from('products').update(product).eq('id',id);
+      }else{
+        result=await db.from('products').insert(product);
+      }
+      if(result.error)throw result.error;
+
+      msg(id?'Produto atualizado com sucesso.':'Produto cadastrado com sucesso.');
+      resetForm();
+      await loadProducts();
+    }catch(e){
+      msg('Erro ao salvar: '+friendlyError(e),true);
+    }finally{
+      setBusy(false);
+    }
+  });
+
+  $('cancelEdit').addEventListener('click',resetForm);
+  $('reload').addEventListener('click',loadProducts);
+  $('logout').addEventListener('click',async()=>{
+    await db.auth.signOut();
+    showDashboard(false);
+    resetForm();
+    msg('Você saiu do painel.');
+  });
+
+  try{
+    const {data,error}=await db.auth.getSession();
+    if(error)throw error;
+    if(data.session){
+      try{
+        await enterPanel(data.session.user);
+      }catch(e){
+        await db.auth.signOut();
+        showDashboard(false);
+        msg(friendlyError(e),true);
+      }
+    }
+  }catch(e){
+    msg('Erro ao verificar sessão: '+friendlyError(e),true);
+  }
+}
+
+init();
+})();
+</script>
+
+</body>
+  </html>
