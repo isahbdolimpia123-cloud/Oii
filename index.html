@@ -102,7 +102,7 @@ const db = window.supabase.createClient(
   'sb_publishable_OfxxVwaBXnWQdtMGVa0S5Q_PR2vyxBq'
 );
   
-);
+
 const brl=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 function renderFilters(){let cats=["Todos",...new Set(products.map(p=>p.cat))];document.getElementById("filters").innerHTML=cats.map(c=>`<button class="filter ${c===active?"active":""}" onclick="setCat('${c}')">${c}</button>`).join("")}
 function setCat(c){active=c;renderFilters();renderProducts()}
