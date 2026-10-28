@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Burguer Dog do Trecho | Peça Online</title>
+<meta name="description" content="Peça Burguer Dog do Trecho online. Escolha seus lanches, adicionais, entrega ou retirada e envie o pedido pelo WhatsApp.">
+<style>
+:root{--red:#b71919;--red2:#e12a1e;--gold:#f4b400;--black:#070707;--card:#151515;--line:#2b2b2b;--muted:#aaa;--green:#20a84b}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#090909;color:#fff;font-family:Arial,Helvetica,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}.top{background:#050505;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}.nav{max-width:1180px;margin:auto;padding:10px 16px;display:flex;align-items:center;gap:18px}.brand{display:flex;align-items:center;gap:9px;font-weight:900;min-width:max-content}.brand img{width:50px;height:50px;object-fit:contain;border-radius:10px}.brand small{display:block;color:var(--gold);font-size:10px}.navlinks{display:flex;gap:18px;margin-left:auto}.navlinks a{font-weight:800;font-size:14px}.navlinks a:hover{color:var(--gold)}.cartbtn{border:0;background:var(--gold);color:#111;border-radius:999px;padding:11px 15px;font-weight:900}
+.hero{background:radial-gradient(circle at 65% 30%,#4a0b0b 0,#130505 42%,#050505 78%);padding:42px 16px}.hero-inner{max-width:1180px;margin:auto;display:grid;grid-template-columns:1fr 1fr;gap:35px;align-items:center}.kicker{color:var(--gold);font-weight:900;letter-spacing:1.8px;text-transform:uppercase;font-size:13px}.hero h1{font-size:clamp(40px,6vw,72px);line-height:.92;margin:12px 0}.hero h1 span{color:var(--gold)}.hero p{color:#ddd;font-size:18px;line-height:1.5;max-width:610px}.ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.cta{display:inline-block;padding:13px 18px;border-radius:10px;font-weight:900}.primary{background:var(--red)}.gold{background:var(--gold);color:#111}.hero-art img{width:100%;max-height:410px;object-fit:contain;filter:drop-shadow(0 20px 35px #000)}
+.quick{max-width:1180px;margin:-8px auto 0;padding:0 16px 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.quick div{background:#111;border:1px solid var(--line);border-radius:14px;padding:13px}.quick b{display:block;color:var(--gold);font-size:13px}.quick span{color:#ccc;font-size:12px}
+section{max-width:1180px;margin:auto;padding:35px 16px}.title{display:flex;justify-content:space-between;align-items:end;gap:15px;margin-bottom:18px}.title h2{margin:0;font-size:30px}.title p{margin:0;color:#999}.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.filter{background:#171717;border:1px solid var(--line);color:#fff;border-radius:999px;padding:9px 13px;font-weight:800}.filter.active,.filter:hover{background:var(--gold);color:#111}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.card{background:var(--card);border:1px solid var(--line);border-radius:17px;overflow:hidden;display:flex;flex-direction:column}.card img{width:100%;height:175px;object-fit:cover;background:#222}.body{padding:13px;display:flex;flex-direction:column;gap:7px;flex:1}.body h3{margin:0;font-size:18px}.desc{font-size:12px;color:#aaa;line-height:1.35;min-height:32px}.price{font-size:21px;font-weight:900;color:var(--gold)}.add{margin-top:auto;border:0;background:var(--red);color:#fff;padding:11px;border-radius:9px;font-weight:900}.add:hover{background:var(--red2)}
+.promo{background:linear-gradient(135deg,#2a0505,#111);border:1px solid #691717;border-radius:20px;padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:center}.promo img{width:100%;max-height:340px;object-fit:cover;border-radius:14px}.promo h2{font-size:38px;margin:7px 0}.promo strong{color:var(--gold);font-size:25px}.promo ul{color:#ddd;line-height:1.8;padding-left:20px}
+.customize{margin-top:16px;background:#111;border:1px solid var(--line);border-radius:16px;padding:18px}.customize h3{margin-top:0}.addon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.addon{background:#181818;border:1px solid #333;border-radius:10px;padding:11px;display:flex;justify-content:space-between;gap:8px}.addon label{display:flex;gap:8px;align-items:center;font-size:13px}.addon input{accent-color:var(--gold)}
+.info{display:grid;grid-template-columns:1fr 1fr;gap:15px}.info-card{background:#111;border:1px solid var(--line);border-radius:16px;padding:18px}.info-card h3{margin-top:0;color:var(--gold)}.hours div{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #242424;color:#ddd}.closed{color:#777!important}
+.drawer{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:60;display:none}.drawer.open{display:block}.cart{position:absolute;right:0;top:0;height:100%;width:min(480px,100%);background:#111;padding:18px;display:flex;flex-direction:column;overflow:hidden}.cart-head{display:flex;align-items:center;justify-content:space-between}.cart-head h2{margin:0}.close{background:none;border:0;color:#fff;font-size:30px}.cart-items{overflow:auto;flex:1;padding-right:3px}.cart-item{border-bottom:1px solid #2a2a2a;padding:12px 0}.row{display:flex;justify-content:space-between;gap:10px}.item-name{font-weight:900}.item-sub{font-size:12px;color:#aaa;margin-top:3px}.qty{display:flex;align-items:center;gap:7px}.qty button{width:27px;height:27px;border:0;background:#333;color:#fff;border-radius:6px}.extras{font-size:11px;color:#bbb;margin-top:5px}.empty{text-align:center;color:#777;padding:40px 10px}.total{display:flex;justify-content:space-between;font-size:22px;font-weight:900;color:var(--gold);padding:13px 0}.checkout{border:0;background:var(--green);color:#fff;padding:14px;border-radius:10px;font-weight:900}.checkout:disabled{opacity:.45;cursor:not-allowed}
+.form{border-top:1px solid #2b2b2b;padding-top:12px;overflow:auto}.form label{display:block;font-size:12px;color:#aaa;margin:9px 0 5px}.form input,.form select,.form textarea{width:100%;background:#1a1a1a;border:1px solid #343434;color:#fff;border-radius:8px;padding:10px;outline:none}.form textarea{min-height:65px;resize:vertical}.delivery-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}.delivery-options label{margin:0}.delivery-options input{display:none}.delivery-options span{display:block;text-align:center;border:1px solid #333;border-radius:8px;padding:10px;background:#181818;color:#ccc}.delivery-options input:checked+span{border-color:var(--gold);color:var(--gold);background:#201c0c}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:#fff;color:#111;padding:12px 16px;border-radius:999px;font-weight:900;opacity:0;pointer-events:none;transition:.25s;z-index:100}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{border-top:1px solid var(--line);background:#050505}.foot{max-width:1180px;margin:auto;padding:25px 16px;color:#aaa;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.foot b{color:#fff}
+@media(max-width:950px){.grid{grid-template-columns:repeat(2,1fr)}.quick{grid-template-columns:repeat(2,1fr)}.hero-inner,.promo{grid-template-columns:1fr}.navlinks{display:none}}
+@media(max-width:600px){.grid,.info{grid-template-columns:1fr}.quick{grid-template-columns:1fr 1fr}.addon-grid{grid-template-columns:1fr}.hero{padding-top:30px}.hero p{font-size:16px}.brand span{font-size:14px}}
+</style>
+</head>
+<body>
+<header class="top"><nav class="nav">
+<a class="brand" href="#inicio"><img src="assets/logo.png" alt="Burguer Dog do Trecho"><span>BURGUER DOG<small>DO TRECHO</small></span></a>
+<div class="navlinks"><a href="#cardapio">Cardápio</a><a href="#combo">Promoção</a><a href="#horarios">Horários</a></div>
+<button class="cartbtn" onclick="openCart()">🛒 <span id="count">0</span> • R$ <span id="miniTotal">0,00</span></button>
+</nav></header>
+
+<main id="inicio">
+<section class="hero"><div class="hero-inner">
+<div><div class="kicker">Peça online • rápido e fácil</div><h1>O melhor <span>lanchão</span> do trecho!</h1>
+<p>Escolha seu lanche, acrescente adicionais, informe se quer entrega ou retirada e envie o pedido pronto pelo WhatsApp.</p>
+<div class="ctas"><a class="cta primary" href="#cardapio">Ver cardápio</a><a class="cta gold" href="https://www.ifood.com.br/" target="_blank">🛵 Pedir pelo iFood</a></div></div>
+<div class="hero-art"><img src="assets/x-toba.png" alt="Lanche Burguer Dog do Trecho"></div>
+</div></section>
+
+<div class="quick">
+<div><b>📲 WhatsApp</b><span>(17) 99680-0605</span></div>
+<div><b>🛵 iFood</b><span>Também aceitamos pedidos por lá</span></div>
+<div><b>🚀 Pedido rápido</b><span>Monte o carrinho em poucos cliques</span></div>
+<div><b>💳 Pagamento</b><span>Combine no checkout pelo WhatsApp</span></div>
+</div>
+
+<section id="cardapio"><div class="title"><div><h2>Cardápio</h2><p>Escolha uma categoria.</p></div></div>
+<div class="filters" id="filters"></div><div class="grid" id="products"></div>
+<div class="customize"><h3>➕ Adicionais</h3><div class="addon-grid" id="addons"></div></div>
+</section>
+
+<section id="combo"><div class="promo">
+<img src="assets/combo.png" alt="Combo Dupla do Trecho">
+<div><div class="kicker">Promoção da casa</div><h2>Dupla do Trecho</h2>
+<ul><li>1 Burguer Tudo</li><li>1 Burguer Bacon</li><li>Batata + refrigerante</li></ul>
+<strong>R$ 54,90</strong><br><button class="add" style="margin-top:14px" onclick="addProduct('Combo Dupla do Trecho',54.90,[], 'Combo')">Adicionar promoção</button></div>
+</div></section>
+
+<section id="horarios"><div class="info">
+<div class="info-card"><h3>📍 Atendimento</h3><p><b>WhatsApp:</b> (17) 99680-0605</p><p><b>Instagram:</b> @burguerdogdotrecho</p><p><b>iFood:</b> disponível para pedidos online</p></div>
+<div class="info-card"><h3>🕒 Horários</h3><div class="hours">
+<div><span>Segunda</span><span>19h às 2h</span></div><div class="closed"><span>Terça</span><span>Fechado</span></div><div><span>Quarta</span><span>19h às 2h</span></div><div><span>Quinta</span><span>19h às 2h</span></div><div><span>Sexta</span><span>19h às 3h</span></div><div><span>Sábado</span><span>19h às 3h</span></div><div><span>Domingo</span><span>19h às 3h</span></div>
+</div></div></div></section>
+</main>
+<footer><div class="foot"><div><b>BURGUER DOG DO TRECHO</b><br>Do caminhão para você.</div><div>© 2026 • Pedidos pelo WhatsApp e iFood.</div></div></footer>
+
+<div class="drawer" id="drawer" onclick="if(event.target.id==='drawer')closeCart()"><aside class="cart">
+<div class="cart-head"><h2>Seu pedido</h2><button class="close" onclick="closeCart()">×</button></div>
+<div class="cart-items" id="cartItems"></div>
+<div class="total"><span>Total</span><span id="total">R$ 0,00</span></div>
+<div class="form">
+<label>Como receber?</label><div class="delivery-options">
+<label><input type="radio" name="mode" value="Entrega" checked onchange="toggleAddress()"><span>🛵 Entrega</span></label>
+<label><input type="radio" name="mode" value="Retirada" onchange="toggleAddress()"><span>🏪 Retirada</span></label>
+</div>
+<label>Nome</label><input id="name" placeholder="Seu nome">
+<div id="addressBox"><label>Endereço</label><input id="address" placeholder="Rua, número e bairro"></div>
+<label>Observações</label><textarea id="notes" placeholder="Ex.: sem cebola, ponto da carne..."></textarea>
+<label>Forma de pagamento</label><select id="payment"><option>Dinheiro</option><option>Pix</option><option>Cartão</option></select>
+</div>
+<button class="checkout" id="checkoutBtn" onclick="checkout()">Enviar pedido pelo WhatsApp</button>
+</aside></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const products=[
+{name:"Hot Dog Simples",price:14.90,img:"assets/hotdog-simples.png",cat:"Hot Dogs",desc:"Salsicha, ketchup, mostarda e batata palha."},
+{name:"Hot Dog de Carne",price:18.90,img:"assets/hotdog-carne.png",cat:"Hot Dogs",desc:"Salsicha, carne temperada, molhos e batata palha."},
+{name:"Hot Dog Misto",price:19.90,img:"assets/hotdog-misto.png",cat:"Hot Dogs",desc:"Salsicha, carne, presunto, molhos e batata palha."},
+{name:"Hot Dog Presunto e Queijo",price:19.90,img:"assets/hotdog-presunto-queijo.png",cat:"Hot Dogs",desc:"Salsicha, presunto, queijo, molhos e batata palha."},
+{name:"Hot Dog Carne e Frango",price:21.90,img:"assets/hotdog-carne-frango.png",cat:"Hot Dogs",desc:"Salsicha, carne, frango desfiado, molhos e batata palha."},
+{name:"Batata Frita",price:15.00,img:"assets/batata.png",cat:"Porções",desc:"Porção crocante."},
+{name:"Batata Cheddar e Bacon",price:22.00,img:"assets/batata-cheddar.png",cat:"Porções",desc:"Batata crocante com cheddar e bacon."},
+{name:"X-Toba",price:24.90,img:"assets/x-toba.png",cat:"Hambúrgueres",desc:"Hambúrguer especial da casa."}
+];
+const addons=[["Queijo",4],["Bacon",5],["Cheddar",4],["Milho",2],["Presunto",3],["Molho especial",2]];
+let cart=[],active="Todos";
+const brl=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+function renderFilters(){let cats=["Todos",...new Set(products.map(p=>p.cat))];document.getElementById("filters").innerHTML=cats.map(c=>`<button class="filter ${c===active?"active":""}" onclick="setCat('${c}')">${c}</button>`).join("")}
+function setCat(c){active=c;renderFilters();renderProducts()}
+function renderProducts(){let list=active==="Todos"?products:products.filter(p=>p.cat===active);document.getElementById("products").innerHTML=list.map(p=>`<article class="card"><img src="${p.img}" alt="${p.name}"><div class="body"><h3>${p.name}</h3><div class="desc">${p.desc}</div><div class="price">${brl(p.price)}</div><button class="add" onclick="addProduct('${p.name.replace(/'/g,"\\'")}',${p.price},[], '${p.cat}')">Adicionar</button></div></article>`).join("")}
+function renderAddons(){document.getElementById("addons").innerHTML=addons.map((a,i)=>`<div class="addon"><label><input type="checkbox" id="ad${i}" value="${i}"> ${a[0]}</label><b>+ ${brl(a[1])}</b></div>`).join("")}
+function selectedAddons(){return addons.map((a,i)=>document.getElementById("ad"+i)?.checked?{name:a[0],price:a[1]}:null).filter(Boolean)}
+function addProduct(name,price,extras=[],cat=""){let extra=extras.length?extras:selectedAddons();let extraTotal=extra.reduce((s,x)=>s+x.price,0);let key=name+"|"+extra.map(x=>x.name).join(",");let x=cart.find(i=>i.key===key);if(x)x.qty++;else cart.push({key,name,price,extras:extra,qty:1,cat});document.querySelectorAll('.addon input').forEach(x=>x.checked=false);updateCart();openCart();toast("Adicionado ao carrinho!")}
+function changeQty(i,d){cart[i].qty+=d;if(cart[i].qty<=0)cart.splice(i,1);updateCart()}
+function itemTotal(i){return (i.price+i.extras.reduce((s,x)=>s+x.price,0))*i.qty}
+function updateCart(){let count=cart.reduce((s,i)=>s+i.qty,0),total=cart.reduce((s,i)=>s+itemTotal(i),0);document.getElementById("count").textContent=count;document.getElementById("miniTotal").textContent=total.toFixed(2).replace(".",",");document.getElementById("total").textContent=brl(total);let box=document.getElementById("cartItems");document.getElementById("checkoutBtn").disabled=!cart.length;if(!cart.length){box.innerHTML='<div class="empty">Seu carrinho está vazio.<br>Escolha seus favoritos no cardápio.</div>';return}box.innerHTML=cart.map((i,n)=>`<div class="cart-item"><div class="row"><div><div class="item-name">${i.name}</div><div class="item-sub">${brl(i.price)} cada</div>${i.extras.length?`<div class="extras">+ ${i.extras.map(x=>x.name).join(", ")}</div>`:""}</div><div class="qty"><button onclick="changeQty(${n},-1)">−</button><b>${i.qty}</b><button onclick="changeQty(${n},1)">+</button></div></div></div>`).join("")}
+function openCart(){document.getElementById("drawer").classList.add("open");updateCart()}
+function closeCart(){document.getElementById("drawer").classList.remove("open")}
+function toggleAddress(){document.getElementById("addressBox").style.display=document.querySelector('input[name="mode"]:checked').value==="Entrega"?"block":"none"}
+function checkout(){if(!cart.length)return;let mode=document.querySelector('input[name="mode"]:checked').value,name=document.getElementById("name").value.trim(),address=document.getElementById("address").value.trim(),notes=document.getElementById("notes").value.trim(),payment=document.getElementById("payment").value;if(!name)return alert("Informe seu nome.");if(mode==="Entrega"&&!address)return alert("Informe o endereço para entrega.");let total=cart.reduce((s,i)=>s+itemTotal(i),0);let lines=cart.map(i=>`• ${i.qty}x ${i.name}${i.extras.length?" (+ "+i.extras.map(x=>x.name).join(", ")+")":""} — ${brl(itemTotal(i))}`).join("%0A");let msg=`Olá! Quero fazer um pedido na Burguer Dog do Trecho.%0A%0A${lines}%0A%0A*Total: ${brl(total)}*%0A*Recebimento:* ${mode}%0A*Nome:* ${encodeURIComponent(name)}%0A${mode==="Entrega"?"*Endereço:* "+encodeURIComponent(address)+"%0A":""}*Pagamento:* ${encodeURIComponent(payment)}%0A*Observações:* ${encodeURIComponent(notes||"Nenhuma")}`;window.open("https://wa.me/5517996800605?text="+msg,"_blank")}
+function toast(t){let x=document.getElementById("toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),1600)}
+renderFilters();renderProducts();renderAddons();updateCart();
+</script>
+</body>
+</html>
