@@ -163,11 +163,39 @@ async function loadOrders() {
 
     if (error) throw error;
 
-    const orders = data || [];
-    $('orderCount').textContent = orders.length;
-    $('salesTotal').textContent = brl(
-      orders.reduce((sum, order) => sum + Number(order.total || 0), 0)
-    );
+    
+const orders = data || [];
+
+const totalVendas = orders.reduce(
+  (sum, order) => sum + Number(order.total || 0),
+  0
+);
+
+const agora = new Date();
+
+const pedidosHoje = orders.filter(order => {
+  const dataPedido = new Date(order.created_at);
+
+  return (
+    dataPedido.getFullYear() === agora.getFullYear() &&
+    dataPedido.getMonth() === agora.getMonth() &&
+    dataPedido.getDate() === agora.getDate()
+  );
+});
+
+const totalHoje = pedidosHoje.reduce(
+  (sum, order) => sum + Number(order.total || 0),
+  0
+);
+
+$('orderCount').textContent = orders.length;
+$('salesTotal').textContent = brl(totalVendas);
+$('todayTotal').textContent = brl(totalHoje);
+$('todayCount').textContent = pedidosHoje.length;
+$('averageTicket').textContent = brl(
+  pedidosHoje.length ? totalHoje / pedidosHoje.length : 0
+);
+    
 
     if (!orders.length) {
       $('orders').innerHTML =
