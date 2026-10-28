@@ -1,148 +1,183 @@
-
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin | Burguer Dog do Trecho</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 20px;
-      font-family: Arial, sans-serif;
-      color: #fff;
-      background: #151515;
-    }
-    .card {
-      width: 100%;
-      max-width: 420px;
-      padding: 28px;
-      border: 1px solid #383838;
-      border-radius: 18px;
-      background: #222;
-    }
-    h1 { margin-top: 0; font-size: 25px; }
-    p { color: #bbb; line-height: 1.5; }
-    label { display: block; margin: 16px 0 7px; }
-    input {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid #555;
-      border-radius: 9px;
-      background: #151515;
-      color: white;
-      font-size: 16px;
-    }
-    button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 18px;
-      border: 0;
-      border-radius: 9px;
-      background: #f5a623;
-      color: #171717;
-      font-size: 16px;
-      font-weight: bold;
-    }
-    #status { overflow-wrap: anywhere; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel | Burguer Dog do Trecho</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#151515;color:#fff;font-family:Arial,sans-serif}
+main{max-width:1000px;margin:auto;padding:18px}
+header,.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+header{justify-content:space-between}
+.panel,.product{background:#222;border:1px solid #444;border-radius:14px;padding:16px;margin:16px 0}
+h1{font-size:25px}h2{font-size:21px}
+p{color:#bbb;line-height:1.5}
+label{display:block;margin:12px 0 6px}
+input,textarea,select{width:100%;padding:12px;border-radius:8px;border:1px solid #555;background:#151515;color:white;font-size:16px}
+button{border:0;border-radius:8px;padding:12px;background:#f5a623;color:#171717;font-weight:bold;font-size:15px;cursor:pointer}
+.secondary{background:#444;color:white}.danger{background:#a83232;color:white}
+.grid,.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.wide{grid-column:1/-1}
+.product img{width:100%;height:150px;object-fit:cover;border-radius:8px}
+.price{font-size:20px;color:#ffc35b;font-weight:bold}
+.hidden{display:none!important}
+.check{display:flex;align-items:center;gap:8px}
+.check input{width:auto}
+#status{overflow-wrap:anywhere}
+@media(max-width:500px){main{padding:10px}.panel{padding:12px}}
+</style>
 </head>
 <body>
-  <main class="card">
-    <h1>🍔 Burguer Dog do Trecho</h1>
-    <p>Painel administrativo. Entre com sua conta autorizada.</p>
+<main>
+<header>
+<div>
+<h1>🍔 Burguer Dog do Trecho</h1>
+<p>Gerenciamento do cardápio</p>
+</div>
+<button id="logout" class="secondary hidden">Sair</button>
+</header>
 
-    <form id="login">
-      <label for="email">E-mail</label>
-      <input id="email" type="email" autocomplete="username" required>
+<section id="loginPanel" class="panel">
+<h2>Entrar no painel</h2>
+<form id="loginForm">
+<label for="email">E-mail</label>
+<input id="email" type="email" autocomplete="username" required>
+<label for="password">Senha</label>
+<input id="password" type="password" autocomplete="current-password" required>
+<div class="actions"><button id="loginButton">Entrar</button></div>
+</form>
+</section>
 
-      <label for="password">Senha</label>
-      <input id="password" type="password"
-        autocomplete="current-password" required>
+<p id="status" role="status"></p>
 
-      <button id="submit" type="submit">Entrar no painel</button>
-    </form>
+<section id="appPanel" class="hidden">
+<section class="panel">
+<h2 id="formTitle">Cadastrar produto</h2>
+<form id="productForm">
+<input id="productId" type="hidden">
+<div class="grid">
+<div><label for="name">Nome *</label><input id="name" required maxlength="120"></div>
+<div><label for="price">Preço (R$) *</label><input id="price" type="number" min="0" step="0.01" required></div>
+<div><label for="category">Categoria</label>
+<select id="category">
+<option>Hot Dogs</option>
+<option>Hambúrgueres</option>
+<option>Porções</option>
+<option>Bebidas</option>
+<option>Combos</option>
+<option>Lanches</option>
+<option>Outros</option>
+</select></div>
+<div><label for="imageUrl">Link da imagem (opcional)</label><input id="imageUrl" type="url" placeholder="https://..."></div>
+<div class="wide"><label for="description">Descrição</label><textarea id="description" rows="3"></textarea></div>
+</div>
+<label class="check"><input id="active" type="checkbox" checked> Produto ativo</label>
+<div class="actions">
+<button id="saveButton">Salvar produto</button>
+<button id="cancelEdit" type="button" class="secondary hidden">Cancelar edição</button>
+</div>
+</form>
+</section>
 
-    <p id="status" role="status"></p>
-    <section id="dashboard" hidden>
-      <h2>Login autorizado!</h2>
-      <p>Você entrou no painel. Os módulos de produtos e pedidos ainda precisam ser conectados.</p>
-      <button id="logout" type="button">Sair</button>
-    </section>
-  </main>
+<section class="panel">
+<header>
+<h2>Produtos cadastrados</h2>
+<button id="refresh" type="button" class="secondary">Atualizar</button>
+</header>
+<div id="products" class="products"></div>
+</section>
+</section>
+</main>
 
-  <script type="module">
-    import { createClient } from
-      'https://esm.sh/@supabase/supabase-js@2';
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-    const SUPABASE_URL =
-      'https://kjkgzmrlypoatqoutkxy.supabase.co';
+const supabase = createClient(
+  'https://kjkgzmrlypoatqoutkxy.supabase.co',
+  'sb_publishable_OfxxVwaBXnWQdtMGVa0S5Q_PR2vyxBq'
+);
 
-    const SUPABASE_KEY =
-      'sb_publishable_OfxxVwaBXnWQdtMGVa0S5Q_PR2vyxBq';
+const $ = id => document.getElementById(id);
+const loginPanel = $('loginPanel');
+const appPanel = $('appPanel');
+const form = $('productForm');
+const productsBox = $('products');
+const status = $('status');
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-    const form = document.querySelector('#login');
-    const status = document.querySelector('#status');
-    const dashboard = document.querySelector('#dashboard');
-    const submit = document.querySelector('#submit');
+function msg(text, error = false) {
+  status.textContent = text;
+  status.style.color = error ? '#ff8888' : '#9ee6ad';
+}
 
-    async function checkAdmin(user) {
-      const { data, error } = await supabase
-        .from('admin_users')
-        .select('user_id')
-        .eq('user_id', user.id)
-        .maybeSingle();
+async function verifyAdmin(user) {
+  const { data, error } = await supabase
+    .from('admin_users')
+    .select('user_id')
+    .eq('user_id', user.id)
+    .maybeSingle();
 
-      if (error) throw error;
-      if (!data) throw new Error('Esta conta não tem permissão de administrador.');
+  if (error) throw error;
+  if (!data) throw new Error('Esta conta não tem permissão de administrador.');
 
-      form.hidden = true;
-      dashboard.hidden = false;
-      status.textContent = 'Acesso autorizado.';
+  loginPanel.classList.add('hidden');
+  appPanel.classList.remove('hidden');
+  $('logout').classList.remove('hidden');
+  await loadProducts();
+}
+
+$('loginForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  $('loginButton').disabled = true;
+  msg('Verificando acesso...');
+
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: $('email').value.trim(),
+      password: $('password').value
+    });
+    if (error) throw error;
+    await verifyAdmin(data.user);
+    msg('Acesso autorizado!');
+  } catch (error) {
+    msg(error.message, true);
+  } finally {
+    $('loginButton').disabled = false;
+  }
+});
+
+function resetForm() {
+  form.reset();
+  $('productId').value = '';
+  $('active').checked = true;
+  $('formTitle').textContent = 'Cadastrar produto';
+  $('saveButton').textContent = 'Salvar produto';
+  $('cancelEdit').classList.add('hidden');
+}
+
+form.addEventListener('submit', async event => {
+  event.preventDefault();
+  const button = $('saveButton');
+  button.disabled = true;
+
+  const id = $('productId').value;
+  const active = $('active').checked;
+  const product = {
+    name: $('name').value.trim(),
+    price: Number($('price').value),
+    category: $('category').value,
+    description: $('description').value.trim(),
+    image_url: $('imageUrl').value.trim(),
+    active,
+    available: active
+  };
+
+  try {
+    if (!product.name || !Number.isFinite(product.price) || product.price < 0) {
+      throw new Error('Confira o nome e o preço.');
     }
 
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      submit.disabled = true;
-      status.textContent = 'Verificando acesso...';
-
-      try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: document.querySelector('#email').value.trim(),
-          password: document.querySelector('#password').value
-        });
-
-        if (error) throw error;
-        await checkAdmin(data.user);
-      } catch (error) {
-        status.textContent = error.message ||
-          'Não foi possível entrar. Verifique sua conexão.';
-      } finally {
-        submit.disabled = false;
-      }
-    });
-
-    document.querySelector('#logout').addEventListener('click', async () => {
-      await supabase.auth.signOut();
-      dashboard.hidden = true;
-      form.hidden = false;
-      form.reset();
-      status.textContent = 'Você saiu do painel.';
-    });
-
-    const { data } = await supabase.auth.getUser();
-    if (data.user) {
-      try {
-        await checkAdmin(data.user);
-      } catch {
-        await supabase.auth.signOut();
-      }
-    }
-  </script>
-</body>
-</html>
+    const res
+```
+  
