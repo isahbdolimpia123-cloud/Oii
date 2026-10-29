@@ -169,12 +169,12 @@ async function loadOrders() {
 
   
 try {
-  alert('Verificando administrador...');
+  
   if (!await verifyAdmin()) {
     alert('Verificação de administrador não passou.');
     return;
   }
-  alert('Administrador confirmado. Tentando atualizar pedido...');
+  
   
 
     const { data, error } = await db
@@ -287,7 +287,7 @@ $('orders').innerHTML = pedidosExibidos.map(order => {
 }
 
 async function quickStatus(id, status) {
-  alert('Botão acionado! Status: ' + status);
+
   try {
     if (!await verifyAdmin()) return;
 
