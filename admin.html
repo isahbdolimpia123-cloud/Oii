@@ -71,7 +71,21 @@
 <p class="muted">Os totais incluem todos os pedidos carregados, inclusive cancelados. O painel consulta até 200 pedidos por vez.</p>
 </div>
 
+
+<div class="box">
+  <label for="statusFilter"><strong>Filtrar pedidos por status</strong></label>
+  <select id="statusFilter">
+    <option value="Todos">Todos os pedidos</option>
+    <option value="Aguardando">Aguardando</option>
+    <option value="Em preparo">Em preparo</option>
+    <option value="Saiu para entrega">Saiu para entrega</option>
+    <option value="Concluído">Concluído</option>
+    <option value="Cancelado">Cancelado</option>
+  </select>
+</div>
+
 <div id="orders"></div>
+    
     
   </section>
 </main>
