@@ -261,7 +261,13 @@ $('orders').innerHTML = pedidosExibidos.map(order => {
           <p class="muted">Data: ${safe(order.created_at)}</p>
           <label for="status-${safe(order.id)}">Status do pedido</label>
           <select id="status-${safe(order.id)}">
-            ${['Aguardando','novo','aguardando','Em preparo',
+            
+${['Aguardando','novo','aguardando','Preparando',
+   'Saiu para entrega','Concluído','Cancelado']
+  .map(status => `<option value="${safe(status)}"
+    ${order.status === status ? 'selected' : ''}>
+    ${safe(status)}</option>`).join('')}
+    
                'Saiu para entrega','Concluído','Cancelado']
               .map(status => `<option value="${safe(status)}"
                 ${order.status === status ? 'selected' : ''}>
