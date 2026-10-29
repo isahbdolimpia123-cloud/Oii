@@ -278,6 +278,33 @@ $('orders').innerHTML = pedidosExibidos.map(order => {
   }
 }
 
+async function quickStatus(id, status) {
+  try {
+    if (!await verifyAdmin()) return;
+
+    const { error } = await db
+      .from('orders')
+      .update({ status })
+      .eq('id', id);
+
+    if (error) throw error;
+
+    showMessage(
+      status === 'Em preparo'
+        ? 'Pedido aceito! Preparação iniciada.'
+        : 'Pedido enviado para entrega!',
+      'success'
+    );
+
+    await loadOrders();
+  } catch (error) {
+    showMessage(
+      'Não foi possível atualizar o pedido: ' + error.message
+    );
+  }
+}
+
+  
 async function updateStatus(id) {
   try {
     if (!await verifyAdmin()) return;
