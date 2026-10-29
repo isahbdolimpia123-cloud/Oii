@@ -205,12 +205,16 @@ if (primeiraConsultaPedidos) {
 
   pedidosNovos.forEach(order => pedidosJaVistos.add(String(order.id)));
 
-  if (pedidosNovos.length > 0) {
-    showMessage(
-      '🔔 Novo pedido recebido! ' + pedidosNovos.length +
-      (pedidosNovos.length === 1 ? ' pedido novo.' : ' pedidos novos.'),
-      'success'
-    );
+  
+if (pedidosNovos.length > 0) {
+  alert(
+    '🔔 Novo pedido recebido! ' +
+    pedidosNovos.length +
+    (pedidosNovos.length === 1
+      ? ' pedido novo.'
+      : ' pedidos novos.')
+  );
+
   }
   }
   
