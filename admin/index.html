@@ -322,6 +322,7 @@ async function enterPanel(user){
   showDashboard(true);
   msg('Login realizado. Acesso autorizado.');
   await loadProducts();
+ await loadOrders();
 }
 
 async function init(){
