@@ -167,8 +167,15 @@ async function loadOrders() {
   showMessage('Carregando pedidos...', 'muted');
   $('orders').innerHTML = '';
 
-  try {
-    if (!await verifyAdmin()) return;
+  
+try {
+  alert('Verificando administrador...');
+  if (!await verifyAdmin()) {
+    alert('Verificação de administrador não passou.');
+    return;
+  }
+  alert('Administrador confirmado. Tentando atualizar pedido...');
+  
 
     const { data, error } = await db
       .from('orders')
