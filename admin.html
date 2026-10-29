@@ -252,9 +252,23 @@ $('orders').innerHTML = pedidosExibidos.map(order => {
                 ${order.status === status ? 'selected' : ''}>
                 ${safe(status)}</option>`).join('')}
           </select>
-          <button onclick="updateStatus('${safe(order.id)}')">
-            Salvar status
-          </button>
+          
+<div class="order-actions">
+  <button
+    onclick="quickStatus('${safe(order.id)}', 'Em preparo')">
+    Aceitar pedido
+  </button>
+
+  <button
+    onclick="quickStatus('${safe(order.id)}', 'Saiu para entrega')">
+    Enviar para entrega
+  </button>
+
+  <button onclick="updateStatus('${safe(order.id)}')">
+    Salvar status
+  </button>
+</div>
+
         </article>`;
     }).join('');
 
