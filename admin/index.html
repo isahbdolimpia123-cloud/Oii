@@ -121,7 +121,75 @@ function setBusy(value){
   $('loginButton').disabled=value;
   $('saveButton').disabled=value;
 }
+async function loadOrders(){
+  const area = $('orders');
+  if (!area) return;
 
+  area.textContent = 'Carregando pedidos...';
+
+  const { data, error } = await db
+    .from('orders')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(100);
+
+  if (error) {
+    area.textContent = 'Erro ao carregar pedidos: ' + error.message;
+    return;
+  }
+
+  area.replaceChildren();
+
+  if (!data || data.length === 0) {
+    area.textContent = 'Ainda não há pedidos.';
+    return;
+  }
+
+  data.forEach(order => {
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const titulo = document.createElement('h3');
+    titulo.textContent = 'Pedido #' + order.id;
+    card.appendChild(titulo);
+
+    const cliente = document.createElement('p');
+    cliente.textContent = 'Cliente: ' + (order.customer_name || 'Não informado');
+    card.appendChild(cliente);
+
+    const status = document.createElement('p');
+    status.textContent = 'Status: ' + (order.status || 'Não informado');
+    card.appendChild(status);
+
+    const total = document.createElement('p');
+    total.textContent = 'Total: ' + Number(order.total || 0).toLocaleString(
+      'pt-BR',
+      { style: 'currency', currency: 'BRL' }
+    );
+    card.appendChild(total);
+
+    const itens = document.createElement('p');
+    itens.textContent = 'Itens: ' + (
+      Array.isArray(order.items)
+        ? order.items.map(item =>
+            typeof item === 'string'
+              ? item
+              : (item.name || item.title || 'Item') +
+                (item.qty ? ' × ' + item.qty : '')
+          ).join(', ')
+        : 'Informação indisponível'
+    );
+    card.appendChild(itens);
+
+    if (order.address) {
+      const endereco = document.createElement('p');
+      endereco.textContent = 'Endereço: ' + order.address;
+      card.appendChild(endereco);
+    }
+
+    area.appendChild(card);
+  });
+}
 function resetForm(){
   $('productForm').reset();
   $('productId').value='';
