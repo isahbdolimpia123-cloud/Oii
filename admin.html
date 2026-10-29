@@ -365,7 +365,10 @@ async function updateStatus(id) {
 
 $('refreshButton').addEventListener('click', loadOrders);
 $('statusFilter').addEventListener('change', loadOrders);
-$('logoutButton').addEventListener('click', async () => {
+setInterval(() => {
+  loadOrders();
+}, 30000);
+  $('logoutButton').addEventListener('click', async () => {
   await db.auth.signOut();
   $('panel').classList.add('hidden');
   $('loginBox').classList.remove('hidden');
