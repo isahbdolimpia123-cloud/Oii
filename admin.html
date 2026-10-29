@@ -280,6 +280,7 @@ $('orders').innerHTML = pedidosExibidos.map(order => {
 }
 
 async function quickStatus(id, status) {
+  alert('Botão acionado! Status: ' + status);
   try {
     if (!await verifyAdmin()) return;
 
