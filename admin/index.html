@@ -395,7 +395,8 @@ async function init(){
 
   $('cancelEdit').addEventListener('click',resetForm);
   $('reload').addEventListener('click',loadProducts);
-  $('logout').addEventListener('click',async()=>{
+  $('reloadOrders').addEventListener('click', loadOrders);
+ $('logout').addEventListener('click',async()=>{
     await db.auth.signOut();
     showDashboard(false);
     resetForm();
