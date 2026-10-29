@@ -291,12 +291,25 @@ async function quickStatus(id, status) {
   try {
     if (!await verifyAdmin()) return;
 
-    const { error } = await db
-      .from('orders')
-      .update({ status })
-      .eq('id', id);
+    
+const { data, error } = await db
+  .from('orders')
+  .update({ status })
+  .eq('id', id)
+  .select();
 
-    if (error) throw error;
+if (error) {
+  alert('ERRO DO SUPABASE: ' + error.message);
+  throw error;
+}
+
+if (!data || data.length === 0) {
+  alert('O Supabase não atualizou nenhum pedido. Verifique a política RLS de UPDATE.');
+  return;
+}
+
+alert('Status atualizado no Supabase: ' + data[0].status);
+    
 
     showMessage(
       status === 'Preparando'
