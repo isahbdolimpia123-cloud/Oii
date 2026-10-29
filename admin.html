@@ -262,6 +262,7 @@ $('orders').innerHTML = pedidosExibidos.map(order => {
           <label for="status-${safe(order.id)}">Status do pedido</label>
           <select id="status-${safe(order.id)}">
             
+
 ${['Aguardando','novo','aguardando','Preparando',
    'Saiu para entrega','Concluído','Cancelado']
   .map(status => `<option value="${safe(status)}"
