@@ -216,5 +216,15 @@ async function loadPublicProducts() {
   }
 renderFilters();renderProducts();renderAddons();updateCart();loadPublicProducts();
 </script>
+ 
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .catch(error => console.error('Erro ao registrar:', error));
+  });
+}
+</script>
+ 
 </body>
 </html>
