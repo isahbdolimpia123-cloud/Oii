@@ -185,6 +185,13 @@ try {
 
     if (error) throw error;
 
+
+alert(
+  'Status recebido do Supabase: ' +
+  (data || []).map(order =>
+    '#' + order.id + ': ' + order.status
+  ).join(' | ')
+);
     
 const orders = data || [];
 
