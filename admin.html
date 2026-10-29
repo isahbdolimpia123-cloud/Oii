@@ -161,7 +161,8 @@ $('loginForm').addEventListener('submit', async event => {
     $('loginButton').disabled = false;
   }
 });
-
+let pedidosJaVistos = new Set();
+let primeiraConsultaPedidos = true;
 async function loadOrders() {
   showMessage('Carregando pedidos...', 'muted');
   $('orders').innerHTML = '';
