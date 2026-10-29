@@ -218,7 +218,13 @@ $('averageTicket').textContent = brl(
       return;
     }
 
-    $('orders').innerHTML = orders.map(order => {
+    
+const filtro = $('statusFilter').value;
+const pedidosExibidos = filtro === 'Todos'
+  ? orders
+  : orders.filter(order => order.status === filtro);
+$('orders').innerHTML = pedidosExibidos.map(order => {
+  
       const items = Array.isArray(order.items)
         ? order.items.map(item => {
             if (typeof item === 'string') return safe(item);
