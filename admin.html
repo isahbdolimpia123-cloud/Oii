@@ -379,7 +379,8 @@ async function updateStatus(id) {
     await loadOrders();
   } catch (error) {
     
-alert('🔔 Novo pedido recebido! ' +
+alert(
+  '🔔 Novo pedido recebido! ' +
   pedidosNovos.length +
   (pedidosNovos.length === 1
     ? ' pedido novo.'
