@@ -378,7 +378,14 @@ async function updateStatus(id) {
     showMessage('Status atualizado no pedido #' + id, 'success');
     await loadOrders();
   } catch (error) {
-    showMessage('Não foi possível atualizar o status: ' + error.message);
+    
+alert('🔔 Novo pedido recebido! ' +
+  pedidosNovos.length +
+  (pedidosNovos.length === 1
+    ? ' pedido novo.'
+    : ' pedidos novos.')
+);
+    ('Não foi possível atualizar o status: ' + error.message);
   }
 }
 
