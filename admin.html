@@ -195,6 +195,25 @@ alert(
     
 const orders = data || [];
 
+if (primeiraConsultaPedidos) {
+  orders.forEach(order => pedidosJaVistos.add(String(order.id)));
+  primeiraConsultaPedidos = false;
+} else {
+  const pedidosNovos = orders.filter(
+    order => !pedidosJaVistos.has(String(order.id))
+  );
+
+  pedidosNovos.forEach(order => pedidosJaVistos.add(String(order.id)));
+
+  if (pedidosNovos.length > 0) {
+    showMessage(
+      '🔔 Novo pedido recebido! ' + pedidosNovos.length +
+      (pedidosNovos.length === 1 ? ' pedido novo.' : ' pedidos novos.'),
+      'success'
+    );
+  }
+  }
+  
 const totalVendas = orders.reduce(
   (sum, order) => sum + Number(order.total || 0),
   0
