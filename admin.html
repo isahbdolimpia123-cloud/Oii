@@ -269,10 +269,13 @@ ${['Aguardando','novo','aguardando','Preparando',
     ${order.status === status ? 'selected' : ''}>
     ${safe(status)}</option>`).join('')}
     
-               'Saiu para entrega','Concluído','Cancelado']
-              .map(status => `<option value="${safe(status)}"
-                ${order.status === status ? 'selected' : ''}>
-                ${safe(status)}</option>`).join('')}
+               
+${['Aguardando','novo','aguardando','Preparando',
+   'Saiu para entrega','Concluído','Cancelado']
+  .map(status => `<option value="${safe(status)}"
+    ${order.status === status ? 'selected' : ''}>
+    ${safe(status)}</option>`).join('')}
+    
           </select>
           
 <div class="order-actions">
